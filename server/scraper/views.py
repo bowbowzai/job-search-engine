@@ -8,15 +8,17 @@ from rest_framework.response import Response
 
 from bs4 import BeautifulSoup
 
+from .utils import *
+
 
 # Create your views here.
 @api_view(["GET"])
 def scrape(request, *args, **kwargs):
-    URL = "https://realpython.github.io/fake-jobs/"
-    page = requests.get(URL)
+    # URL = "https://realpython.github.io/fake-jobs/"
+    # page = requests.get(URL)
 
-    soup = BeautifulSoup(page.content, "html.parser")
-    result = soup.find(id="ResultsContainer")
+    # soup = BeautifulSoup(page.content, "html.parser")
+    # result = soup.find(id="ResultsContainer")
 
     # python_jobs = result.find_all(
     #     "h2", string=lambda text: "python" in text.lower().strip()
@@ -31,16 +33,17 @@ def scrape(request, *args, **kwargs):
     #     print(company_element.text.strip())
     #     print(location_element.text.strip())
 
-    jobs = result.find_all("div", class_="card-content")
+    # jobs = result.find_all("div", class_="card-content")
 
-    for job in jobs:
-        title = job.find("h2", class_=["title", " is-5"])
-        company = job.find("h3", class_=["subtitle", "is-6", "company"])
-        location = job.find("p", class_="location")
-        print(f"{title.text.strip()} {company.text.strip()} {location.text.strip()}")
-        links = job.find_all("a", class_="card-footer-item")
-        link_url = links[1]["href"]
-        print(f"Apply here: {link_url}")
-        print()
-        print()
+    # for job in jobs:
+    #     title = job.find("h2", class_=["title", " is-5"])
+    #     company = job.find("h3", class_=["subtitle", "is-6", "company"])
+    #     location = job.find("p", class_="location")
+    #     print(f"{title.text.strip()} {company.text.strip()} {location.text.strip()}")
+    #     links = job.find_all("a", class_="card-footer-item")
+    #     link_url = links[1]["href"]
+    #     print(f"Apply here: {link_url}")
+    #     print()
+    #     print()
+    linkedin_jobs_scraped()
     return Response("hello")
