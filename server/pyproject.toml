@@ -1,0 +1,11 @@
+[tool.black]
+exclude = """
+  /(
+    | env
+    | venv
+    | migrations
+  )/
+"""
+
+[tool.isort]
+skip = ["migrations", "venv"]
