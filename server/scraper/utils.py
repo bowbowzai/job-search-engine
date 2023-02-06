@@ -1,9 +1,7 @@
 import requests
 import re
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from django.conf import settings
-import time
+from collections import defaultdict
 
 # https://dashboard.scraperapi.com/billing
 
@@ -13,6 +11,7 @@ def jobstore_jobs_scraped():
         response = requests.get("https://www.jobstore.com/my/search-jobs?since=7")
         soup = BeautifulSoup(response.content, "html.parser")
         job_lists = soup.find_all("div", class_="search_content_result")
+        jobs = []
         for job in job_lists:
             job_title = job.find("h2", id="post_internal").text.strip()
             job_company = job.find("div", class_="search_content_result_company").find(
@@ -36,12 +35,22 @@ def jobstore_jobs_scraped():
             )
             job_link_element = job.find("a", attrs={"href": access_link_pattern})
             job_link = job_link_element["href"]
-            print(f"Job title: {job_title}")
-            print(f"Job company: {job_company}")
-            print(f"Job location: {job_location}")
-            print(f"Post time: {post_time}")
-            print(f"Apply here: {job_link}")
-            print()
+            # print(f"Job title: {job_title}")
+            # print(f"Job company: {job_company}")
+            # print(f"Job location: {job_location}")
+            # print(f"Post time: {post_time}")
+            # print(f"Apply here: {job_link}")
+            # print()
+            jobs.append(
+                {
+                    "job_title": job_title,
+                    "job_company": job_company,
+                    "job_location": job_location,
+                    "post_time": post_time,
+                    "job_link": job_link,
+                }
+            )
+        return jobs
     except Exception as e:
         # TODO: send me an email
         print(e)
@@ -55,6 +64,7 @@ def jobstreet_jobs_scraped():
         )
         soup = BeautifulSoup(response.content, "html.parser")
         job_lists = soup.find("div", attrs={"data-automation": "jobListing"})
+        jobs = []
         for job in job_lists:
             job_link_element = job.find(
                 "a", class_="_1hr6tkx5 _1hr6tkx7 _1hr6tkxa sx2jih0 sx2jihf zcydq8h"
@@ -84,12 +94,22 @@ def jobstreet_jobs_scraped():
                 post_time = post_time.find("span").text.strip()
             else:
                 post_time = ""
-        print(f"Job title: {job_title}")
-        print(f"Job company: {job_company}")
-        print(f"Job location: {job_location}")
-        print(f"Post time: {post_time}")
-        print(f"Apply here: {job_link}")
-        print()
+            # print(f"Job title: {job_title}")
+            # print(f"Job company: {job_company}")
+            # print(f"Job location: {job_location}")
+            # print(f"Post time: {post_time}")
+            # print(f"Apply here: {job_link}")
+            # print()
+            jobs.append(
+                {
+                    "job_title": job_title,
+                    "job_company": job_company,
+                    "job_location": job_location,
+                    "post_time": post_time,
+                    "job_link": job_link,
+                }
+            )
+        return jobs
     except Exception as e:
         # TODO: send me an email
         pass
@@ -105,10 +125,11 @@ def linkedin_jobs_scraped():
             "div",
             class_="base-card relative w-full hover:no-underline focus:no-underline base-card--link base-search-card base-search-card--link job-search-card",
         )
+        jobs = []
         for job in jobs_list:
             job_title = job.find("h3", class_="base-search-card__title").text.strip()
             job_company = job.find("a", class_="hidden-nested-link").text.strip()
-            job_loaction = job.find(
+            job_location = job.find(
                 "span", class_="job-search-card__location"
             ).text.strip()
             post_time_element = job.find(
@@ -122,14 +143,23 @@ def linkedin_jobs_scraped():
                 "a",
                 class_="base-card__full-link absolute top-0 right-0 bottom-0 left-0 p-0 z-[2]",
             )
-            access_link = access_link_element["href"]
-
-            print(f"Job title: {job_title}")
-            print(f"Job company: {job_company}")
-            print(f"Job location: {job_loaction}")
-            print(f"Post time: {post_time}")
-            print(f"Apply here: {access_link}")
-            print()
+            job_link = access_link_element["href"]
+            # print(f"Job title: {job_title}")
+            # print(f"Job company: {job_company}")
+            # print(f"Job location: {job_location}")
+            # print(f"Post time: {post_time}")
+            # print(f"Apply here: {job_link}")
+            # print()
+            jobs.append(
+                {
+                    "job_title": job_title,
+                    "job_company": job_company,
+                    "job_location": job_location,
+                    "post_time": post_time,
+                    "job_link": job_link,
+                }
+            )
+        return jobs
     except Exception as e:
         # TODO: send me an email
         pass

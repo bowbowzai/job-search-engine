@@ -7,5 +7,14 @@ class Job(PseudoWrapper):
     job_company = models.CharField(max_length=255)
     job_location = models.CharField(max_length=255)
     post_time = models.CharField(max_length=100)
-    access_link = models.URLField()
+    job_link = models.URLField()
     is_job_still_available = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = (
+            (
+                "job_title",
+                "job_company",
+                "job_location",
+            ),
+        )

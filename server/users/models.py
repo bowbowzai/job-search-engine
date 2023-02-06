@@ -41,7 +41,7 @@ class MyUserManager(BaseUserManager):
         return user
 
     def create_superuser(
-        self, first_name, last_name, email, username, password=None, **extra_fields
+        self, first_name, last_name, email, password=None, **extra_fields
     ):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
@@ -59,7 +59,7 @@ class MyUserManager(BaseUserManager):
             password=password,
             first_name=first_name,
             last_name=last_name,
-            **extra_fields
+            **extra_fields,
         )
         user.save(using=self._db)
         return user
@@ -67,7 +67,8 @@ class MyUserManager(BaseUserManager):
 
 class MyUser(AbstractUser):
     pkid = models.BigAutoField(primary_key=True, unique=True, editable=False)
-    id = models.UUIDField(uuid.uuid4, unique=True, editable=False)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    username = None
     email = models.EmailField(
         verbose_name="email address",
         max_length=255,
@@ -87,3 +88,6 @@ class MyUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
