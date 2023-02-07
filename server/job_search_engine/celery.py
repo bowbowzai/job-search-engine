@@ -19,6 +19,7 @@ app.conf.beat_schedule = {
     "update-jobs-every-5-hours": {
         "task": "scraper.tasks.scraped_jobs",
         "schedule": crontab(hour="*/3", minute=0),
+        # "schedule": 60,
     },
 }
 # Load task modules from all registered Django apps.

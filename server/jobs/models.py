@@ -9,6 +9,7 @@ class Job(PseudoWrapper):
     post_time = models.CharField(max_length=100)
     job_link = models.URLField(max_length=350)
     is_job_still_available = models.BooleanField(default=True)
+    company_logo_url = models.URLField(max_length=350, blank=True, null=True)
 
     class Meta:
         unique_together = (

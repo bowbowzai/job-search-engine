@@ -35,12 +35,25 @@ def jobstore_jobs_scraped():
             )
             job_link_element = job.find("a", attrs={"href": access_link_pattern})
             job_link = job_link_element["href"]
-            # print(f"Job title: {job_title}")
-            # print(f"Job company: {job_company}")
-            # print(f"Job location: {job_location}")
-            # print(f"Post time: {post_time}")
-            # print(f"Apply here: {job_link}")
-            # print()
+            company_image_element = job.find("div", class_="search_content_result_pic")
+            if company_image_element:
+                if "assets" in company_image_element["style"]:
+                    company_image_path = (
+                        company_image_element["style"]
+                        .split("url(//assets.jobstore.com/")[1]
+                        .split(")")[0]
+                    )
+                elif "asset" in company_image_element["style"]:
+                    company_image_path = (
+                        company_image_element["style"]
+                        .split("url(//asset.jobstore.com/")[1]
+                        .split(")")[0]
+                    )
+                company_logo_url = "https://assets.jobstore.com/" + str(
+                    company_image_path
+                )
+            else:
+                company_logo_url = None
             jobs.append(
                 {
                     "job_title": job_title,
@@ -48,6 +61,7 @@ def jobstore_jobs_scraped():
                     "job_location": job_location,
                     "post_time": post_time,
                     "job_link": job_link,
+                    "company_logo_url": company_logo_url,
                 }
             )
         return jobs
@@ -94,12 +108,18 @@ def jobstreet_jobs_scraped():
                 post_time = post_time.find("span").text.strip()
             else:
                 post_time = ""
-            # print(f"Job title: {job_title}")
-            # print(f"Job company: {job_company}")
-            # print(f"Job location: {job_location}")
-            # print(f"Post time: {post_time}")
-            # print(f"Apply here: {job_link}")
-            # print()
+            company_image_element = job.find(
+                "div",
+                attrs={
+                    "data-automation": "job-card-logo",
+                },
+            ).find("img")
+            if company_image_element:
+                company_logo_url = company_image_element["src"]
+            else:
+                company_logo_url = None
+            # print(company_logo_url)
+
             jobs.append(
                 {
                     "job_title": job_title,
@@ -107,6 +127,7 @@ def jobstreet_jobs_scraped():
                     "job_location": job_location,
                     "post_time": post_time,
                     "job_link": job_link,
+                    "company_logo_url": company_logo_url,
                 }
             )
         return jobs
@@ -144,12 +165,14 @@ def linkedin_jobs_scraped():
                 class_="base-card__full-link absolute top-0 right-0 bottom-0 left-0 p-0 z-[2]",
             )
             job_link = access_link_element["href"]
-            # print(f"Job title: {job_title}")
-            # print(f"Job company: {job_company}")
-            # print(f"Job location: {job_location}")
-            # print(f"Post time: {post_time}")
-            # print(f"Apply here: {job_link}")
-            # print()
+            company_logo_element = job.find(
+                "img", class_="artdeco-entity-image artdeco-entity-image--square-4"
+            )
+            if company_logo_element:
+                company_logo_url = company_logo_element["data-delayed-url"]
+            else:
+                company_logo_url = None
+            print(company_logo_url)
             jobs.append(
                 {
                     "job_title": job_title,
@@ -157,6 +180,7 @@ def linkedin_jobs_scraped():
                     "job_location": job_location,
                     "post_time": post_time,
                     "job_link": job_link,
+                    "company_logo_url": company_logo_url,
                 }
             )
         return jobs

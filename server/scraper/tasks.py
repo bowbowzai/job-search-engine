@@ -3,6 +3,7 @@ from threading import Thread
 from .utils import *
 from jobs.models import Job
 from django.db import IntegrityError
+import datetime
 
 
 @shared_task(bind=True)
@@ -32,6 +33,7 @@ def scraped_jobs(self):
                 existed_job.job_location = job.get("job_location")
                 existed_job.post_time = job.get("post_time")
                 existed_job.job_link = job.get("job_link")
+                existed_job.updated_at = datetime.datetime.now()
                 existed_job.save()
         except IntegrityError as e:
             continue
