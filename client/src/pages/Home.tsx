@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import Navbar from "../components/Navbar";
 import {
   Avatar,
@@ -25,7 +25,7 @@ import logo from "../assets/logo.png"
 const Home = () => {
   const jobsQuery = useQuery({
     queryKey: ["jobs"],
-    queryFn: () => getJobPosts()
+    queryFn: () => getJobPosts(),
   })
   return (
     <Box bgColor="gray.100" minH={"100vh"}>
@@ -106,13 +106,13 @@ const Home = () => {
             </Box>
           </Box>
           <Box flex={"4"} p="4">
-            <Search />
-            {jobsQuery.isLoading ? (<Center mt={10}><CircularProgress isIndeterminate color='orange.400' thickness='12px' /></Center>) : <SimpleGrid mt={5} columns={3} gap={5}>
+            <Search jobsRefetch={jobsQuery.refetch} />
+            {jobsQuery.isLoading ? (<Center mt={10}><CircularProgress isIndeterminate color='orange.400' thickness='12px' /></Center>) : jobsQuery.data?.length >= 1 ? <SimpleGrid mt={5} columns={3} gap={5}>
               {
                 jobsQuery.data?.map((job: Job) => (<JobCard key={job.id} {...job} />))
               }
 
-            </SimpleGrid>}
+            </SimpleGrid> : (<div>No results...</div>)}
           </Box>
         </Flex>
       </Box>

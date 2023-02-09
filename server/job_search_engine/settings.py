@@ -51,8 +51,10 @@ LOCAL_APPS = [
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
+    "djoser",
     "django_celery_results",
     "django_celery_beat",
 ]
@@ -155,10 +157,14 @@ AUTH_USER_MODEL = "users.MyUser"
 DJOSER = {
     "LOGIN_FIELD": "email",
     "PASSWORD_RESET_CONFIRM_URL": "/password/reset/confirm/{uid}/{token}",
-    "USERNAME_RESET_CONFIRM_URL": "/username/reset/confirm/{uid}/{token}",
     "ACTIVATION_URL": "/activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
-    "SERIALIZERS": {},
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "SERIALIZERS": {
+        "user": "users.serializers.UserSerializer",
+        "current_user": "users.serializers.UserSerializer",
+        "user_create": "users.serializers.UserCreateSerializer",
+    },
 }
 
 
@@ -205,3 +211,17 @@ CELERY_TASK_TRACK_STARTED = True
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+
+# EMAIL_BACKEND = env("EMAIL_BACKEND")
+# EMAIL_PORT = env("EMAIL_PORT")
+# EMAIL_USE_TLS = env("EMAIL_USE_TLS")
+# EMAIL_HOST = env("EMAIL_HOST")
+# EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+
+# EMAIL_HOST = env("EMAIL_HOST")
+# EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+# EMAIL_PORT = env("EMAIL_PORT")
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

@@ -78,6 +78,7 @@ class MyUser(AbstractUser):
         },
     )
     first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
     is_active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

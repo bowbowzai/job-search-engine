@@ -9,9 +9,12 @@ import {
   Link,
   Stack,
   Image,
+  Text
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 export default function SplitScreen() {
+  const navigate = useNavigate()
   return (
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
       <Flex p={8} flex={1} align={'center'} justify={'center'}>
@@ -31,11 +34,12 @@ export default function SplitScreen() {
               align={'start'}
               justify={'space-between'}>
               <Checkbox>Remember me</Checkbox>
-              <Link color={'blue.500'}>Forgot password?</Link>
+              <Link color={'blue.500'} onClick={() => navigate("/forgot-password")}>Forgot password?</Link>
             </Stack>
             <Button colorScheme={'blue'} variant={'solid'}>
               Sign in
             </Button>
+            <Text> No account yet? <Link color={'blue.500'} onClick={() => navigate("/register")}>Register</Link></Text>
           </Stack>
         </Stack>
       </Flex>

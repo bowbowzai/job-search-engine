@@ -9,10 +9,11 @@ import {
   useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
-
+import { useNavigate } from "react-router-dom"
 import logo from "../assets/logo.png"
 
 export default function WithSubnavigation() {
+  const navigate = useNavigate()
 
   return (
     <Box>
@@ -41,7 +42,9 @@ export default function WithSubnavigation() {
             fontSize={'sm'}
             fontWeight={400}
             variant={'link'}
-            href={'#'}>
+            cursor={"pointer"}
+            onClick={() => navigate("/login")}
+          >
             Sign In
           </Button>
           <Button
@@ -50,8 +53,9 @@ export default function WithSubnavigation() {
             fontSize={'sm'}
             fontWeight={600}
             color={'white'}
+            cursor={"pointer"}
             colorScheme="blue"
-            href={'#'}
+            onClick={() => navigate("/register")}
           >
             Sign Up
           </Button>
