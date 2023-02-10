@@ -12,6 +12,7 @@ class Profile(models.Model):
     )
     desired_job = models.CharField(max_length=255)
     desired_location = models.CharField(max_length=255)
+    position = models.CharField(max_length=255, blank=True)
 
     def __str__(self) -> str:
         return f"{self.user.get_full_name()}'s profile"

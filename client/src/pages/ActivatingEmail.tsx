@@ -20,14 +20,14 @@ export default function VerifyEmailForm(): JSX.Element {
   const activateMutation = useMutation({
     mutationFn: verifyEmail,
     onError: (error: any) => {
-      // const firstError = Object.entries(error?.response?.data)[0]
-      // const firstErrorMsg = firstError[1]
-      // if (Array.isArray(firstErrorMsg)) {
-      //   setErrMsg(firstErrorMsg[0])
-      // } else {
-      //   setErrMsg(String(firstErrorMsg).toString())
-      // }
-      // console.log(firstErrorMsg)
+      const firstError = Object.entries(error?.response?.data)[0]
+      const firstErrorMsg = firstError[1]
+      if (Array.isArray(firstErrorMsg)) {
+        setErrMsg(firstErrorMsg[0])
+      } else {
+        setErrMsg(String(firstErrorMsg).toString())
+      }
+      console.log(firstErrorMsg)
     },
   })
   useEffect(() => {
@@ -68,7 +68,7 @@ export default function VerifyEmailForm(): JSX.Element {
                 <Text fontSize={"xl"} mt={6} mb={6} textAlign={"center"}>
                   Successfully activated your email on JobHunter!
                 </Text>
-                <Button leftIcon={<Icon as={AiOutlineArrowLeft} />}>Go to login</Button>
+                <Button onClick={() => navigate("/login")} leftIcon={<Icon as={AiOutlineArrowLeft} />}>Go to login</Button>
               </Flex>) : <Text color="red">{errMsg}</Text>}
             </Box>
 

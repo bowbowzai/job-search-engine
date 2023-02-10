@@ -1,19 +1,28 @@
 import {
   Box,
   Flex,
-  Text,
-  IconButton,
   Button,
   Stack,
   Image,
   useColorModeValue,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { useNavigate } from "react-router-dom"
 import logo from "../assets/logo.png"
+import { AuthenticationContext } from '../context/AuthenticationContext';
+import { useContext } from "react"
+import { useMutation } from '@tanstack/react-query';
+import Cookies from "js-cookie"
+import { logout } from '../api/authentications';
 
 export default function WithSubnavigation() {
   const navigate = useNavigate()
+
+  const { user, setUser, logoutMutate } = useContext(AuthenticationContext)
+
+
+  function handleLogout() {
+    logoutMutate()
+  }
 
   return (
     <Box>
@@ -32,7 +41,7 @@ export default function WithSubnavigation() {
 
         </Flex>
 
-        <Stack
+        {user.id != "" ? (<Button colorScheme="red" onClick={handleLogout}>Logout</Button>) : <Stack
           flex={{ base: 1, md: 0 }}
           justify={'flex-end'}
           direction={'row'}
@@ -59,7 +68,7 @@ export default function WithSubnavigation() {
           >
             Sign Up
           </Button>
-        </Stack>
+        </Stack>}
       </Flex>
 
 

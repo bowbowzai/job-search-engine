@@ -11,10 +11,39 @@ import {
   Image,
   Text
 } from '@chakra-ui/react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { login } from "../api/authentications"
+import { AuthenticationContext } from '../context/AuthenticationContext';
 
 export default function SplitScreen() {
   const navigate = useNavigate()
+  const { setUser, setTokens, setLoading } = useContext(AuthenticationContext)
+
+  const [loginCredentials, setLoginCredentials] = useState({
+    email: "",
+    password: ""
+  })
+
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      //setUser(data.user)
+      localStorage.setItem("tokens", JSON.stringify(data))
+      setTokens(data)
+      setLoading(false)
+      navigate("/")
+    },
+
+  })
+  function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setLoginCredentials(prev => ({
+      ...prev,
+      [event.target.name]: event.target.value
+    }))
+  }
+
   return (
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
       <Flex p={8} flex={1} align={'center'} justify={'center'}>
@@ -22,23 +51,23 @@ export default function SplitScreen() {
           <Heading fontSize={'2xl'}>Sign in to your account</Heading>
           <FormControl id="email">
             <FormLabel>Email address</FormLabel>
-            <Input type="email" />
+            <Input type="email" name="email" value={loginCredentials.email} onChange={handleOnChange} />
           </FormControl>
           <FormControl id="password">
             <FormLabel>Password</FormLabel>
-            <Input type="password" />
+            <Input type="password" name="password" value={loginCredentials.password} onChange={handleOnChange} />
           </FormControl>
           <Stack spacing={6}>
             <Stack
               direction={{ base: 'column', sm: 'row' }}
               align={'start'}
-              justify={'space-between'}>
-              <Checkbox>Remember me</Checkbox>
+              justify={'end'}>
               <Link color={'blue.500'} onClick={() => navigate("/forgot-password")}>Forgot password?</Link>
             </Stack>
-            <Button colorScheme={'blue'} variant={'solid'}>
+            <Button onClick={() => loginMutation.mutate(loginCredentials)} colorScheme={'blue'} variant={'solid'}>
               Sign in
             </Button>
+            {loginMutation.isError && <Text color="red" textAlign={"center"}>Invalid email or password</Text>}
             <Text> No account yet? <Link color={'blue.500'} onClick={() => navigate("/register")}>Register</Link></Text>
           </Stack>
         </Stack>

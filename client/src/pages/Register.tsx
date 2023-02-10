@@ -19,7 +19,7 @@ import {
 import { useEffect, useState, useContext } from 'react';
 import { ViewIcon, ViewOffIcon, CheckCircleIcon } from '@chakra-ui/icons';
 import { AiOutlineArrowLeft } from "react-icons/ai"
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { Register } from '../types/RegisterTyepe';
 import { useMutation } from "@tanstack/react-query"
 import { register } from '../api/authentications';
@@ -168,7 +168,7 @@ export default function SignupCard(): JSX.Element {
                 </Stack>
                 <Stack pt={6}>
                   <Text align={'center'}>
-                    Already a user? <Link color={'blue.400'}>Login</Link>
+                    Already a user? <RouterLink to="/login"><Link color={'blue.400'}>Login</Link></RouterLink>
                   </Text>
                 </Stack>
               </Stack>

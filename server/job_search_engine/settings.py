@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import environ
 from pathlib import Path
 from datetime import timedelta
+from corsheaders.defaults import default_headers
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -225,3 +226,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 # EMAIL_PORT = env("EMAIL_PORT")
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+CORS_ALLOW_CREDENTIALS = True
+
+
+SESSION_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
