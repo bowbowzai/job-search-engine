@@ -128,14 +128,16 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
     let savedTokensJson;
     if (savedTokens) {
       savedTokensJson = JSON.parse(savedTokens?.toString())
+      setTokens(savedTokensJson)
     }
-    if (loading) {
-      if (savedTokensJson) {
-        refreshTokenMutation.mutate(savedTokensJson.refresh)
-      } else {
-        setLoading(false)
-      }
-    }
+    setLoading(false)
+    // if (loading) {
+    //   if (savedTokensJson) {
+    //     refreshTokenMutation.mutate(savedTokensJson.refresh)
+    //   } else {
+    //     setLoading(false)
+    //   }
+    // }
     let timer: number;
 
     timer = setInterval(() => {

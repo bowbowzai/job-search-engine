@@ -69,6 +69,7 @@ const Home = () => {
                           {user.position}
                         </Text>
                         <Button
+                          onClick={() => navigate("/edit-profile")}
                           mt={5}
                           w="70%"
                           colorScheme="blue"

@@ -29,3 +29,14 @@ class ProfileSerializer(serializers.ModelSerializer):
                 representation["profile_img"]
             )
         return representation
+
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = [
+            "profile_img",
+            "desired_job",
+            "desired_location",
+            "position",
+        ]
