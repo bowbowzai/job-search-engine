@@ -8,6 +8,7 @@ import ActivatingEmail from './pages/ActivatingEmail'
 import PrivateRoute from './utils/PrivateRoute'
 import PreventAccess from './utils/PreventAccess'
 import UserProfileEdit from "./pages/EditProfile"
+import ResetPasswordForm from './pages/ResetPassword'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         </Route>
         <Route path="/activate/:uid/:token" element={<ActivatingEmail />} />
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+        <Route path="/password-reset/:uid/:token/" element={<ResetPasswordForm />} />
       </Routes>
     </div>
   )

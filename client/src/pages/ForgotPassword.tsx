@@ -7,15 +7,32 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  Center,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
+import { requestResetPassword } from '../api/authentications';
 
-type ForgotPasswordFormInputs = {
-  email: string;
-};
 
 export default function ForgotPasswordForm(): JSX.Element {
   const navigate = useNavigate()
+  const [email, setEmail] = useState("")
+  const [errMsg, setErrMsg] = useState("")
+  const [successMsg, setSuccessMsg] = useState("")
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: requestResetPassword,
+    onSuccess: () => {
+      setSuccessMsg("Email sent, kindly check your email for further instructions.")
+      setErrMsg("")
+    },
+    onError: () => {
+      setErrMsg("Email invalid. Please make sure that the entered email is valid.")
+      setSuccessMsg("")
+    }
+  })
+
   return (
     <Flex
       minH={'100vh'}
@@ -44,10 +61,14 @@ export default function ForgotPasswordForm(): JSX.Element {
             placeholder="your-email@example.com"
             _placeholder={{ color: 'gray.500' }}
             type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </FormControl>
         <Stack spacing={6}>
           <Button
+            onClick={() => resetPasswordMutation.mutate(email)}
+            isLoading={resetPasswordMutation.isLoading}
             bg={'blue.400'}
             color={'white'}
             _hover={{
@@ -55,6 +76,8 @@ export default function ForgotPasswordForm(): JSX.Element {
             }}>
             Request Reset
           </Button>
+          {errMsg && successMsg == "" && <Center><Text color={"red"} textAlign={"center"}>{errMsg}</Text></Center>}
+          {successMsg && errMsg == "" && <Center><Text color={"green"} textAlign={"center"}>{successMsg}</Text></Center>}
         </Stack>
         <Text
           cursor={"pointer"}

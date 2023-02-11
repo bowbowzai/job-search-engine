@@ -33,3 +33,21 @@ export function refreshToken(refresh:string) {
     refresh: refresh
   }).then(response => response.data)
 }
+
+export function requestResetPassword(email: string) {
+  return api.post("/auth/users/reset_password/", {
+    email
+  }).then(response => response.data)
+}
+
+export function resetPasswordConfirmation(data: {
+  uid: string,
+  token: string,
+  password: string
+}) {
+  return api.post("/auth/users/reset_password_confirm/", {
+    "uid": data.uid,
+    "token": data.token,
+    "new_password": data.password
+  })
+}

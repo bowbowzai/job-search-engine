@@ -39,6 +39,9 @@ export default function UserProfileEdit(): JSX.Element {
   const [newProfileImg, setNewProfileImg] = useState<File>()
   const [newPosition, setNewPisition] = useState("")
 
+  console.log("newAddedSkills" + newAddedSkills);
+  console.log("newAddedLocations" + newAddedLocations);
+
   const updateProfileMutation = useMutation({
     mutationFn: updateProfile,
     onSuccess: (data) => {
@@ -76,8 +79,6 @@ export default function UserProfileEdit(): JSX.Element {
       addToSkills(jobKeyword)
     }
   }
-
-  console.log(user)
 
   function handleAddLocations(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key == "Enter" && locationKeyword.trim() != "") {

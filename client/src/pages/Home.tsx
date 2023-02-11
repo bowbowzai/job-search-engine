@@ -13,6 +13,7 @@ import {
   SimpleGrid,
   CircularProgress,
   Image,
+  Link,
   Center,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query"
@@ -22,12 +23,13 @@ import { getJobPosts } from "../api/jobs";
 import { Job } from "../types/JobType"
 import logo from "../assets/logo.png"
 import { AuthenticationContext } from "../context/AuthenticationContext";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 const Home = () => {
   const navigate = useNavigate()
   const { user, loading, tokens } = useContext(AuthenticationContext)
-
+  console.log(user)
   const jobsQuery = useQuery({
     queryKey: ["jobs"],
     queryFn: () => getJobPosts(),
@@ -86,36 +88,39 @@ const Home = () => {
                     <CardBody>
                       <Box>
                         <Text fontWeight="bold" fontSize="xl">
-                          Skills
+                          Desired Jobs
                         </Text>
-                        <SimpleGrid mt={3} columns={3} gap={4}>
-                          <Tag size="lg" colorScheme="red" borderRadius="full">
+
+                        {(user.desired_job != null && user.desired_job != "") ? user.desired_job.split(",").map((job) =>
+                          <Tag mx={2} my={1} key={"userJob" + job} size="lg" colorScheme="red" borderRadius="full">
                             <TagLabel px={2} textAlign="center" w="full">
-                              React
+                              {job}
                             </TagLabel>
-                          </Tag> <Tag size="lg" colorScheme="red" borderRadius="full">
-                            <TagLabel px={2} textAlign="center" w="full">
-                              Django
-                            </TagLabel>
-                          </Tag>
-                        </SimpleGrid>
+                          </Tag>) : <RouterLink to={"/edit-profile"}>
+                          <Link w="full" isExternal>
+                            Set your desired job now! <ExternalLinkIcon mx='2px' />
+                          </Link>
+                        </RouterLink>}
                       </Box>
                       <Box mt={10}>
                         <Text fontWeight="bold" fontSize="xl">
                           Desired work location
                         </Text>
-                        <SimpleGrid mt={3} columns={3} gap={4}>
-                          <Tag size="lg" bgColor="#ffc0f9" borderRadius="full">
+
+                        {(user.desired_location != null && user.desired_location != "") ? user.desired_location.split(",").map((location) =>
+                          <Tag
+                            mx={2} my={1}
+                            key={"workLocation" + location}
+                            size="lg" bgColor="#ffc0f9" borderRadius="full">
                             <TagLabel px={2} textAlign="center" w="full">
-                              Kuala Lumpur
+                              {location}
                             </TagLabel>
-                          </Tag>
-                          <Tag size="lg" bgColor="#ffc0f9" borderRadius="full">
-                            <TagLabel px={2} textAlign="center" w="full">
-                              Johor
-                            </TagLabel>
-                          </Tag>
-                        </SimpleGrid>
+                          </Tag>) :
+                          <RouterLink to={"/edit-profile"}>
+                            <Link w="full" isExternal>
+                              Set your desired work location now! <ExternalLinkIcon mx='2px' />
+                            </Link>
+                          </RouterLink>}
                       </Box>
                     </CardBody>
                   </Card>}
@@ -158,8 +163,8 @@ const Home = () => {
               </footer>
             </Center>
           </Box>
-        </Box>}
-    </Box>
+        </Box >}
+    </Box >
   );
 };
 

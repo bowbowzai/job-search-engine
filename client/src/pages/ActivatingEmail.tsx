@@ -19,6 +19,9 @@ export default function VerifyEmailForm(): JSX.Element {
 
   const activateMutation = useMutation({
     mutationFn: verifyEmail,
+    onSuccess: () => {
+
+    },
     onError: (error: any) => {
       const firstError = Object.entries(error?.response?.data)[0]
       const firstErrorMsg = firstError[1]

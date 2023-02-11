@@ -64,7 +64,7 @@ export default function SplitScreen() {
               justify={'end'}>
               <Link color={'blue.500'} onClick={() => navigate("/forgot-password")}>Forgot password?</Link>
             </Stack>
-            <Button onClick={() => loginMutation.mutate(loginCredentials)} colorScheme={'blue'} variant={'solid'}>
+            <Button isLoading={loginMutation.isLoading} onClick={() => loginMutation.mutate(loginCredentials)} colorScheme={'blue'} variant={'solid'}>
               Sign in
             </Button>
             {loginMutation.isError && <Text color="red" textAlign={"center"}>Invalid email or password</Text>}
