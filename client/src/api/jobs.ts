@@ -8,3 +8,11 @@ export function getJobPosts(): Promise<Job[]> {
 export function getJobBySearch(keyword: string): Promise<Job[]> {
   return api.get(`/jobs/search/${keyword}/`).then(res => res.data)
 }
+
+export function getRecommendedJob(access:string): Promise<Job[]>{
+  return api.get(`/jobs/recommends/`, {
+    headers: {
+      Authorization: "JWT " + access
+    }
+  }).then(res => res.data)
+}

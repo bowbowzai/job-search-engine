@@ -15,16 +15,21 @@ import {
   Image,
   Link,
   Center,
+  Skeleton,
+  Stack,
+  VStack,
+  HStack,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query"
 import Search from "../components/Search";
 import JobCard from "../components/JobCard";
-import { getJobPosts } from "../api/jobs";
+import { getJobPosts, getRecommendedJob } from "../api/jobs";
 import { Job } from "../types/JobType"
 import logo from "../assets/logo.png"
 import { AuthenticationContext } from "../context/AuthenticationContext";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { AiOutlineUser } from "react-icons/ai";
 
 const Home = () => {
   const navigate = useNavigate()
@@ -33,6 +38,11 @@ const Home = () => {
   const jobsQuery = useQuery({
     queryKey: ["jobs"],
     queryFn: () => getJobPosts(),
+  })
+  const recommendedJobsQuery = useQuery({
+    queryKey: ["recommendedJobs"],
+    queryFn: () => getRecommendedJob(tokens.access),
+    enabled: tokens.access != null && tokens.access != ""
   })
   return (
     <Box bgColor="gray.100" minH={"100vh"}>
@@ -61,7 +71,7 @@ const Home = () => {
                       >
                         <Avatar
                           size="2xl"
-                          name="Segun Adebayo"
+                          icon={<AiOutlineUser fontSize='1.5rem' />}
                           src={user.profile_img}
                         />
                         <Text fontWeight={"bold"} fontSize={"3xl"}>
@@ -128,7 +138,33 @@ const Home = () => {
               </Box>
               <Box flex={"4"} p="4">
                 <Search jobsRefetch={jobsQuery.refetch} />
-                {jobsQuery.isLoading ? (<Center mt={10}><CircularProgress isIndeterminate color='orange.400' thickness='12px' /></Center>) : jobsQuery.data?.length >= 1 ? <SimpleGrid mt={5} columns={3} gap={5}>
+                {tokens.access != "" && tokens.access != null && <Box mt={5}>
+                  <Text fontWeight="semibold" fontSize="2xl">
+                    Recommended Jobs
+                  </Text>
+                  {recommendedJobsQuery.isLoading ? (<SimpleGrid mt={5} columns={3} gap={5}>
+                    <Skeleton w="full" height="380px" />
+                    <Skeleton w="full" height="380px" />
+                    <Skeleton w="full" height="380px" />
+                  </SimpleGrid>) : recommendedJobsQuery.isSuccess && recommendedJobsQuery.data?.length >= 1 ? <SimpleGrid mt={5} columns={3} gap={5}>
+                    {
+                      recommendedJobsQuery.data?.map((job: Job) => (<JobCard key={job.id} {...job} />))
+                    }
+
+                  </SimpleGrid> : (<RouterLink to={"/edit-profile"}>
+                    <Link w="full" isExternal>
+                      Add some desired jobs/locations tags so I can recommend you some jobs! <ExternalLinkIcon mx='2px' />
+                    </Link>
+                  </RouterLink>)}
+                </Box>}
+                <Text mt={5} fontWeight="semibold" fontSize="2xl">
+                  All Jobs
+                </Text>
+                {jobsQuery.isLoading ? (<SimpleGrid mt={5} columns={3} gap={5}>
+                  <Skeleton w="full" height="380px" />
+                  <Skeleton w="full" height="380px" />
+                  <Skeleton w="full" height="380px" />
+                </SimpleGrid>) : jobsQuery.data && jobsQuery.data?.length >= 1 ? <SimpleGrid mt={5} columns={3} gap={5}>
                   {
                     jobsQuery.data?.map((job: Job) => (<JobCard key={job.id} {...job} />))
                   }
@@ -137,7 +173,6 @@ const Home = () => {
               </Box>
             </Flex>
           </Box>
-
           <Box py={5}>
             <Flex
               align={'center'}

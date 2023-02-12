@@ -1,9 +1,10 @@
 from django.shortcuts import render
+from django.db.models import Q
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
+from profiles.models import Profile
 from .models import Job
 from .serializers import JobSerializer
-from django.db.models import Q
 
 
 # Create your views here.
@@ -36,4 +37,32 @@ class RecommendedJob(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        # user_skills = user.profile
+        user_desired_job = user.profile.desired_job
+        user_desired_job_list = (
+            user_desired_job.split(",") if user_desired_job.split(",") != [""] else []
+        )
+
+        user_desired_location = user.profile.desired_location
+        user_desired_location_list = (
+            user_desired_location.split(",")
+            if user_desired_location.split(",") != [""]
+            else []
+        )
+
+        desired_list = user_desired_job_list + user_desired_location_list
+
+        if user.profile.position:
+            desired_list += [user.profile.position]
+
+        jobs = Job.objects.none()
+
+        for desired_keyword in desired_list:
+            job_by_title = Job.objects.filter(
+                Q(job_title__icontains=desired_keyword.strip())
+                | (Q(job_location__icontains=desired_keyword.strip()))
+            )
+            jobs = jobs | job_by_title
+        return Response(
+            JobSerializer(instance=jobs, many=True).data[:3],
+            status=status.HTTP_200_OK,
+        )

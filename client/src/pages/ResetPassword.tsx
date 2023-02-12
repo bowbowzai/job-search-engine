@@ -72,8 +72,8 @@ export default function ResetPasswordForm(): JSX.Element {
             <Button
               onClick={() => resetConfirmationMutation.mutate({
                 password: password,
-                token: token?.toString(),
-                uid: uid?.toString()
+                token: String(token),
+                uid: String(uid)
               })}
               bg={'blue.400'}
               color={'white'}

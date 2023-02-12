@@ -34,13 +34,12 @@ export default function UserProfileEdit(): JSX.Element {
   const [jobKeyword, setJobKeyword] = useState("")
   const [locationKeyword, setLocationKeyword] = useState("")
   const [previewImg, setPreviewImg] = useState("")
-  const [newAddedSkills, setNewAddedSkills] = useState<string[]>(() => [...user.desired_job != null ? user.desired_job.split(",") : []])
-  const [newAddedLocations, setNewAddedLocations] = useState<string[]>(() => [...user.desired_location != null ? user.desired_location.split(",") : []])
+  const [newAddedSkills, setNewAddedSkills] = useState<string[]>(() => [...(user.desired_job != null && user.desired_job != "") ? user.desired_job.split(",") : []])
+  const [newAddedLocations, setNewAddedLocations] = useState<string[]>(() => [...(user.desired_location != null && user.desired_location != "") ? user.desired_location.split(",") : []])
   const [newProfileImg, setNewProfileImg] = useState<File>()
   const [newPosition, setNewPisition] = useState("")
 
-  console.log("newAddedSkills" + newAddedSkills);
-  console.log("newAddedLocations" + newAddedLocations);
+  console.log(newAddedSkills);
 
   const updateProfileMutation = useMutation({
     mutationFn: updateProfile,

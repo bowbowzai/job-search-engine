@@ -1,6 +1,6 @@
 import react, { createContext, useState, useEffect } from "react"
 import { User } from "../types/UserType";
-import { useMutation, useQuery, MutateOptions } from "@tanstack/react-query";
+import { useMutation, useQuery, MutateOptions, RefetchOptions, RefetchQueryFilters, QueryObserverResult } from "@tanstack/react-query";
 import { logout, refreshToken } from "../api/authentications";
 import { getUser } from "../api/users";
 import jwt_decode from "jwt-decode";
@@ -18,7 +18,7 @@ type AuthenticationType = {
   setUser: react.Dispatch<react.SetStateAction<User>>,
   setLoading: react.Dispatch<react.SetStateAction<boolean>>,
   loading: boolean;
-  logoutMutate: (variables: void, options?: MutateOptions<any, unknown, void, unknown> | undefined) => void
+  logoutMutate: (variables: void, options?: MutateOptions<any, unknown, void, unknown> | undefined) => void,
 }
 
 export const AuthenticationContext = createContext<AuthenticationType>({
@@ -39,7 +39,7 @@ export const AuthenticationContext = createContext<AuthenticationType>({
   setUser: () => { },
   setLoading: () => { },
   loading: true,
-  logoutMutate: () => { }
+  logoutMutate: () => { },
 })
 
 type JWTDecode = {
@@ -111,7 +111,7 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
   })
 
   const getUserQuery = useQuery({
-    queryKey: ["user"],
+    queryKey: ["user", tokens.access],
     queryFn: () => {
       const decodedData = jwt_decode<JWTDecode>(tokens.access);
       const userId = decodedData.user_id
@@ -130,21 +130,20 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
       savedTokensJson = JSON.parse(savedTokens?.toString())
       setTokens(savedTokensJson)
     }
-    setLoading(false)
-    // if (loading) {
-    //   if (savedTokensJson) {
-    //     refreshTokenMutation.mutate(savedTokensJson.refresh)
-    //   } else {
-    //     setLoading(false)
-    //   }
-    // }
+    if (loading) {
+      if (savedTokensJson) {
+        refreshTokenMutation.mutate(savedTokensJson.refresh)
+      } else {
+        setLoading(false)
+      }
+    }
     let timer: number;
 
     timer = setInterval(() => {
       if (tokens.access && tokens.refresh) {
         refreshTokenMutation.mutate(String(tokens.access))
       }
-    }, 25 * 600 * 1000)
+    }, 1500000)
 
     return () => clearInterval(timer)
   }, [loading])
@@ -157,7 +156,7 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
       setUser,
       setLoading,
       loading,
-      logoutMutate: logoutMutation.mutate
+      logoutMutate: logoutMutation.mutate,
     }}>
       {children}
     </AuthenticationContext.Provider>
