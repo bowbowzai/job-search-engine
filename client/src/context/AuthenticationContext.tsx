@@ -146,7 +146,7 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
     }, 1500000)
 
     return () => clearInterval(timer)
-  }, [loading])
+  }, [])
 
   return (
     <AuthenticationContext.Provider value={{

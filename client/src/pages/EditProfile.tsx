@@ -123,12 +123,27 @@ export default function UserProfileEdit(): JSX.Element {
   }
 
   return (
-    <Box>
+    <Box px={{
+      base: 3,
+      lg: 0
+    }}>
       <Navbar />
       <Flex
-        gap={5}
-        align={'flex-start'}
+        flexDir={{
+          base: "column",
+          lg: "row"
+        }}
+        minH={"calc(100vh-101px)"}
+        gap={{
+          base: 0,
+          lg: 5
+        }}
+        align={{
+          base: "center",
+          lg: "flex-start"
+        }}
         justify={'center'}
+        justifyContent={"center"}
         bg={useColorModeValue('gray.50', 'gray.800')}>
         <Stack
           spacing={4}
@@ -207,14 +222,17 @@ export default function UserProfileEdit(): JSX.Element {
           </Stack>
         </Stack>
         <Box>
-          <Stack w="full" flexGrow={0} spacing={4}
-            width={'full'}
+          <Stack flexGrow={0} spacing={4}
+            mx="auto"
             maxW={'md'}
             bg={useColorModeValue('white', 'gray.700')}
             rounded={'xl'}
             boxShadow={'lg'}
             p={6}
-            my={12}>
+            my={{
+              base: 0,
+              lg: 12
+            }}>
             <FormControl id="position" >
               <FormLabel>Desired Jobs</FormLabel>
               <InputGroup>
@@ -242,7 +260,7 @@ export default function UserProfileEdit(): JSX.Element {
               </Tag>)}
             </FormControl>
           </Stack>
-          <Stack w="full" flexGrow={0} spacing={4}
+          <Stack mx="auto" w="full" flexGrow={0} spacing={4}
             width={'full'}
             maxW={'md'}
             bg={useColorModeValue('white', 'gray.700')}
@@ -278,7 +296,6 @@ export default function UserProfileEdit(): JSX.Element {
             </FormControl>
           </Stack>
         </Box>
-
       </Flex>
     </Box>
   );

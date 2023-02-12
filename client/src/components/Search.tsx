@@ -76,13 +76,25 @@ const Search = ({ jobsRefetch }: SearchProp) => {
         />
         <Input value={searchKeyword} onKeyDown={handleOnEnterDown} onChange={handleOnChange} fontSize="xl" type='tel' placeholder='Type here...' />
       </InputGroup>
-      <Flex justifyContent={"flex-end"}><Button onClick={handleOnSearchClick} size={'lg'} colorScheme='blue' variant={"outline"}>Search</Button></Flex>
+      <Flex justifyContent={"flex-end"}><Button onClick={handleOnSearchClick} size={{
+        base: "md",
+        lg: "lg"
+      }} colorScheme='blue' variant={"outline"}>Search</Button></Flex>
       <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={handleModalClose}>
         <ModalOverlay />
-        <ModalContent maxW="70%">
-          <ModalHeader fontSize={"4xl"}>Search Results
+        <ModalContent maxW={{
+          base: "95%",
+          lg: "70%"
+        }}>
+          <ModalHeader fontSize={{
+            base: "2xl",
+            lg: "4xl"
+          }}>Search Results
             {
-              !jobSearchQuery.isLoading && !jobSearchQuery.isRefetching && <Badge ml={3} colorScheme='green' fontSize={"md"}>{jobSearchQuery.isSuccess && jobSearchQuery.data.length} job{jobSearchQuery.isSuccess && jobSearchQuery.data.length <= 1 ? "" : "s"} found
+              !jobSearchQuery.isLoading && !jobSearchQuery.isRefetching && <Badge ml={{
+                base: 2,
+                md: 3
+              }} colorScheme='green' fontSize={"md"}>{jobSearchQuery.isSuccess && jobSearchQuery.data.length} job{jobSearchQuery.isSuccess && jobSearchQuery.data.length <= 1 ? "" : "s"} found
               </Badge>}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -90,7 +102,10 @@ const Search = ({ jobsRefetch }: SearchProp) => {
               jobSearchQuery.isRefetching || jobSearchQuery.isLoading ? <Center mx='auto'>
                 <CircularProgress isIndeterminate color="blue" />
               </Center> :
-                jobSearchQuery.isSuccess && jobSearchQuery.data.length >= 1 ? <SimpleGrid mt={5} columns={3} gap={5}>
+                jobSearchQuery.isSuccess && jobSearchQuery.data.length >= 1 ? <SimpleGrid mt={5} columns={{
+                  base: 1,
+                  lg: 3
+                }} gap={5}>
                   {jobSearchQuery.data?.map((job: Job) => (<JobCard key={job.id} {...job} />))}
                 </SimpleGrid> : <Box textAlign="center" py={10} px={6}>
                   <InfoIcon boxSize={'50px'} color={'blue.500'} />

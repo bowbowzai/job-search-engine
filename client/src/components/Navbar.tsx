@@ -36,8 +36,11 @@ export default function WithSubnavigation() {
         borderStyle={'solid'}
         borderColor={useColorModeValue('gray.200', 'gray.900')}
         align={'center'}>
-        <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-          <Image src={logo} width={"160px"} onClick={() => navigate("/")} cursor="pointer" />
+        <Flex flex={{ base: 1 }} justify={{ md: 'start' }}>
+          <Image src={logo} width={{
+            base: "130px",
+            md: "160px"
+          }} onClick={() => navigate("/")} cursor="pointer" />
 
         </Flex>
 

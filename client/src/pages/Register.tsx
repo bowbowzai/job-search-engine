@@ -28,13 +28,19 @@ import { AuthenticationContext } from "../context/AuthenticationContext"
 function Success() {
   const navigate = useNavigate()
   return (
-    <Box w="70%" textAlign="center" py={10} px={6}>
+    <Box mt={{
+      base: 10,
+      md: 0
+    }} w="70%" textAlign="center" py={10} px={6}>
       <CheckCircleIcon boxSize={'50px'} color={'green.500'} />
       <Heading as="h2" size="2xl" mt={6} mb={6}>
         Successfully register on JobHunter!
       </Heading>
-      <Text color={'gray.500'} fontSize="xl">
-        Congratulations! You have successfully registered with us. To activate your account and start using our services, please check your email for further instructions. If you don't see the activation email, please check your spam folder or contact us for assistance. Thank you for choosing us and we look forward to serving you soon.
+      <Text color={'gray.500'} fontSize="xl" textAlign={{
+        base: "justify",
+        lg: "center"
+      }}>
+        To activate your account and start using our services, please check your email for further instructions. If you don't see the activation email, please check your spam folder or contact us for assistance. Thank you for choosing us and we look forward to serving you soon.
       </Text>
     </Box>
   );

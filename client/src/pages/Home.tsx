@@ -78,22 +78,36 @@ const Home = () => {
           <CircularProgress isIndeterminate color="orange" />
         </Center> : <Box>
           <Box py="2" px="2">
-            <Flex>
-              <Box flex={"1.5"} p="4">
+            <Flex flexDir={{
+              base: "column",
+              lg: "row",
+            }}>
+              <Box mb={{
+                base: 2,
+                lg: 0
+              }} flex={"1.5"} p="4" pb={{
+                base: 0,
+                lg: 4
+              }}>
                 <Box>
                   <Card variant={"elevated"} boxShadow={"md"}>
                     <CardBody>
                       {tokens.access == "" ? (
-                        <Flex flexDir={"column"} gap={5}>
-                          <Text textAlign={"justify"} fontSize={"xl"}>You need to be logged in to access the full range of features on this site. Please log in or sign up for an account to get started.
-                          </Text>
-                          <Button colorScheme="blue" onClick={() => navigate("/login")}>Sign In</Button>
-                        </Flex>
+                        <Box>
+                          <Flex flexDir={"column"} gap={5}>
+                            <Text textAlign={"justify"} fontSize={"xl"}>You need to be logged in to access the full range of features on this site. Please log in or sign up for an account to get started.
+                            </Text>
+                            <Button colorScheme="blue" onClick={() => navigate("/login")}>Sign In</Button>
+                          </Flex>
+                        </Box>
                       ) : <Flex
                         flexDir={"column"}
                         justifyContent={"center"}
                         alignItems={"center"}
-                        gap={4}
+                        gap={{
+                          base: 0,
+                          lg: 4
+                        }}
                       >
                         <Avatar
                           size="2xl"
@@ -108,7 +122,10 @@ const Home = () => {
                         </Text>
                         <Button
                           onClick={() => navigate("/edit-profile")}
-                          mt={5}
+                          mt={{
+                            base: 3,
+                            lg: 5
+                          }}
                           w="70%"
                           colorScheme="blue"
                           size="lg"
@@ -121,12 +138,14 @@ const Home = () => {
                     </CardBody>
                   </Card>
                   {tokens.access != "" && <Card mt={5} variant={"elevated"} boxShadow={"md"}>
-                    <CardBody>
+                    <CardBody display={{
+                      base: "none",
+                      lg: "block"
+                    }}>
                       <Box>
-                        <Text fontWeight="bold" fontSize="xl">
+                        <Text mb={3} fontWeight="bold" fontSize="xl">
                           Desired Jobs
                         </Text>
-
                         {(user.desired_job != null && user.desired_job != "") ? user.desired_job.split(",").map((job) =>
                           <Tag mx={2} my={1} key={"userJob" + job} size="lg" colorScheme="red" borderRadius="full">
                             <TagLabel px={2} textAlign="center" w="full">
@@ -139,7 +158,7 @@ const Home = () => {
                         </RouterLink>}
                       </Box>
                       <Box mt={10}>
-                        <Text fontWeight="bold" fontSize="xl">
+                        <Text mb={3} fontWeight="bold" fontSize="xl">
                           Desired work location
                         </Text>
 
@@ -162,21 +181,26 @@ const Home = () => {
                   </Card>}
                 </Box>
               </Box>
-              <Box flex={"4"} p="4">
+              <Box flex={"4"} p="4" py={{
+                base: 1,
+                lg: 4
+              }}>
                 <Search jobsRefetch={jobsQuery.refetch} />
                 {tokens.access != "" && tokens.access != null && <Box mt={5}>
                   <Text fontWeight="semibold" fontSize="2xl">
                     Recommended Jobs
                   </Text>
-                  {recommendedJobsQuery.isLoading ? (<SimpleGrid mt={5} columns={3} gap={5}>
+                  {recommendedJobsQuery.isLoading ? (<SimpleGrid mt={5} gap={5}>
                     <Skeleton w="full" height="380px" />
                     <Skeleton w="full" height="380px" />
                     <Skeleton w="full" height="380px" />
-                  </SimpleGrid>) : recommendedJobsQuery.isSuccess && recommendedJobsQuery.data?.length >= 1 ? <SimpleGrid mt={5} columns={3} gap={5}>
+                  </SimpleGrid>) : recommendedJobsQuery.isSuccess && recommendedJobsQuery.data?.length >= 1 ? <SimpleGrid mt={5} columns={{
+                    base: 1,
+                    lg: 3
+                  }} gap={5}>
                     {
                       recommendedJobsQuery.data?.map((job: Job) => (<JobCard key={job.id} {...job} />))
                     }
-
                   </SimpleGrid> : (<RouterLink to={"/edit-profile"}>
                     <Link w="full" isExternal>
                       Add some desired jobs/locations tags so I can recommend you some jobs! <ExternalLinkIcon mx='2px' />
@@ -191,7 +215,10 @@ const Home = () => {
                   <Skeleton w="full" height="380px" />
                   <Skeleton w="full" height="380px" />
                 </SimpleGrid>) :
-                  <SimpleGrid mt={5} columns={3} gap={5}>
+                  <SimpleGrid mt={5} columns={{
+                    base: 1,
+                    lg: 3
+                  }} gap={5}>
                     {jobsQuery.isSuccess && jobsQuery.data.pages.map(page => page.results.map((job: Job) => (<JobCard key={job.id} {...job} />)))}
                   </SimpleGrid>
                 }
