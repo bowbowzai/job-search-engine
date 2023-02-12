@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useCallback, useRef, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import {
   Avatar,
@@ -16,11 +16,9 @@ import {
   Link,
   Center,
   Skeleton,
-  Stack,
-  VStack,
-  HStack,
+  Icon,
 } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query"
 import Search from "../components/Search";
 import JobCard from "../components/JobCard";
 import { getJobPosts, getRecommendedJob } from "../api/jobs";
@@ -30,20 +28,48 @@ import { AuthenticationContext } from "../context/AuthenticationContext";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { AiOutlineUser } from "react-icons/ai";
+import { FaRegSadCry } from "react-icons/fa"
 
 const Home = () => {
   const navigate = useNavigate()
   const { user, loading, tokens } = useContext(AuthenticationContext)
-  console.log(user)
-  const jobsQuery = useQuery({
+  const observerElem = useRef(null)
+
+  const jobsQuery = useInfiniteQuery({
     queryKey: ["jobs"],
-    queryFn: () => getJobPosts(),
+    queryFn: ({ pageParam = 1 }) => getJobPosts(pageParam),
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.next == null) {
+        return undefined
+      } else {
+        return allPages.length + 1
+      }
+    },
   })
   const recommendedJobsQuery = useQuery({
     queryKey: ["recommendedJobs"],
     queryFn: () => getRecommendedJob(tokens.access),
-    enabled: tokens.access != null && tokens.access != ""
+    enabled: tokens.access != null && tokens.access != "",
   })
+
+  const handleObserver = useCallback((entries: any) => {
+    const [target] = entries
+    if (target.isIntersecting) {
+      jobsQuery.fetchNextPage()
+    }
+  }, [jobsQuery.fetchNextPage, jobsQuery.hasNextPage])
+
+  useEffect(() => {
+    if (observerElem.current) {
+      const element = (observerElem.current) as Element
+      const option = { threshold: 0 }
+      const observer = new IntersectionObserver(handleObserver, option);
+      observer.observe(element as Element)
+      return () => observer.unobserve(element as Element)
+    }
+  }, [jobsQuery.fetchNextPage, jobsQuery.hasNextPage, handleObserver])
+
+
   return (
     <Box bgColor="gray.100" minH={"100vh"}>
       <Navbar />
@@ -164,14 +190,24 @@ const Home = () => {
                   <Skeleton w="full" height="380px" />
                   <Skeleton w="full" height="380px" />
                   <Skeleton w="full" height="380px" />
-                </SimpleGrid>) : jobsQuery.data && jobsQuery.data?.length >= 1 ? <SimpleGrid mt={5} columns={3} gap={5}>
-                  {
-                    jobsQuery.data?.map((job: Job) => (<JobCard key={job.id} {...job} />))
-                  }
-
-                </SimpleGrid> : (<div>No results...</div>)}
+                </SimpleGrid>) :
+                  <SimpleGrid mt={5} columns={3} gap={5}>
+                    {jobsQuery.isSuccess && jobsQuery.data.pages.map(page => page.results.map((job: Job) => (<JobCard key={job.id} {...job} />)))}
+                  </SimpleGrid>
+                }
               </Box>
             </Flex>
+            <div className='loader' ref={observerElem}>
+              {jobsQuery.hasNextPage ? jobsQuery.isFetchingNextPage && <Center mt={10}>
+                <CircularProgress isIndeterminate color="blue" />
+              </Center> :
+                <Box mt={10}>
+                  <Flex justifyContent={"center"} alignItems={"center"} fontSize={"2xl"} gap={3}>
+                    <Text>We're sorry, but it looks like there are no more job results</Text>
+                    /(ㄒoㄒ)/~~
+                  </Flex>
+                </Box>}
+            </div>
           </Box>
           <Box py={5}>
             <Flex

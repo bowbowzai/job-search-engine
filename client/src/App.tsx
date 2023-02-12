@@ -25,6 +25,7 @@ function App() {
         <Route path="/activate/:uid/:token" element={<ActivatingEmail />} />
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />
         <Route path="/password-reset/:uid/:token/" element={<ResetPasswordForm />} />
+        <Route path="/*" element={<Home />} />
       </Routes>
     </div>
   )
