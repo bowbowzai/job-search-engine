@@ -161,9 +161,9 @@ AUTH_USER_MODEL = "users.MyUser"
 
 DJOSER = {
     "LOGIN_FIELD": "email",
-    "PASSWORD_RESET_CONFIRM_URL": "/password/reset/confirm/{uid}/{token}",
-    "ACTIVATION_URL": "/activate/{uid}/{token}",
-    "PASSWORD_RESET_CONFIRM_URL": "/password-reset/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    "PASSWORD_RESET_CONFIRM_URL": "password-reset/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "USER_CREATE_PASSWORD_RETYPE": True,
     "PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND": True,

@@ -1,6 +1,6 @@
-import react, { createContext, useState, useEffect } from "react"
+import react, { createContext, useState, useEffect, useRef } from "react"
 import { User } from "../types/UserType";
-import { useMutation, useQuery, MutateOptions, RefetchOptions, RefetchQueryFilters, QueryObserverResult } from "@tanstack/react-query";
+import { useMutation, useQuery, MutateOptions, useQueryClient, RefetchQueryFilters, QueryObserverResult } from "@tanstack/react-query";
 import { logout, refreshToken } from "../api/authentications";
 import { getUser } from "../api/users";
 import jwt_decode from "jwt-decode";
@@ -50,6 +50,7 @@ type JWTDecode = {
 }
 
 export const AuthenticationProvider = ({ children }: { children: React.ReactNode }) => {
+  const isUnmountedRef = useRef(false)
   const [userId, setUserId] = useState("")
   const [tokens, setTokens] = useState(
     () =>
@@ -71,6 +72,8 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
   })
   const [loading, setLoading] = useState(true)
 
+  const queryClient = useQueryClient()
+
   function clearInfo() {
     setUser({
       "id": "",
@@ -87,14 +90,21 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
     })
     localStorage.removeItem("tokens")
   }
+
+  function invalidateCacheData() {
+    queryClient.clear()
+  }
+
   const logoutMutation = useMutation({
     mutationFn: () => {
       return logout(tokens.refresh)
     },
     onSuccess: (data) => {
+      invalidateCacheData()
       clearInfo()
     },
     onError: () => {
+      invalidateCacheData()
       clearInfo()
     }
   })
@@ -104,11 +114,15 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
       return refreshToken(refresh)
     },
     onSuccess: (data) => {
+      console.log("refresh token success")
+      console.log("is loading from success: " + loading);
       setLoading(false)
       setTokens(data)
       localStorage.setItem("tokens", JSON.stringify(data))
     },
     onError(error) {
+      console.log("is loading from failure: " + loading);
+      console.log("refresh token failure")
       setLoading(false)
       logoutMutation.mutate()
     },
@@ -128,16 +142,27 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
   })
 
   useEffect(() => {
+    let timer: number;
+    if (isUnmountedRef.current) return
+    isUnmountedRef.current = true
     if (loading) {
-      refreshTokenMutation.mutate(tokens.refresh)
+      if (tokens.access != null && tokens.access != "") {
+        refreshTokenMutation.mutate(tokens.refresh)
+      } else {
+        setLoading(false)
+      }
     }
-    let timer = setInterval(() => {
+    timer = setInterval(() => {
+      console.log("interval invoke")
       if (tokens.access && tokens.refresh) {
         refreshTokenMutation.mutate(String(tokens.access))
       }
     }, 1500000)
 
-    return () => clearInterval(timer)
+    return () => {
+      isUnmountedRef.current = true
+      clearInterval(timer)
+    }
   }, [])
 
   return (

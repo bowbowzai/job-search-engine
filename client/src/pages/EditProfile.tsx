@@ -24,7 +24,7 @@ import { AuthenticationContext } from "../context/AuthenticationContext"
 import { useContext, useState } from "react"
 import Navbar from "../components/Navbar"
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateProfile } from '../api/profiles';
 
 
@@ -39,11 +39,12 @@ export default function UserProfileEdit(): JSX.Element {
   const [newProfileImg, setNewProfileImg] = useState<File>()
   const [newPosition, setNewPisition] = useState("")
 
-  console.log(newAddedSkills);
+  const queryClient = useQueryClient()
 
   const updateProfileMutation = useMutation({
     mutationFn: updateProfile,
     onSuccess: (data) => {
+      queryClient.invalidateQueries(["recommendedJobs"])
       setUser(data)
       navigate("/")
     },

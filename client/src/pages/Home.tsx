@@ -75,7 +75,7 @@ const Home = () => {
       <Navbar />
       {loading ?
         <Center mt={10}>
-          <CircularProgress isIndeterminate color="orange" />
+          <CircularProgress isIndeterminate color="blue" />
         </Center> : <Box>
           <Box py="2" px="2">
             <Flex flexDir={{
