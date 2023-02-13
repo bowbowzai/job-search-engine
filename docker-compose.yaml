@@ -1,0 +1,105 @@
+version: '2'
+
+services:
+  backend:
+    build:
+      context: ./server
+    command: gunicorn job_search_engine.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./server:/user/src/app
+      - static_volume:/usr/src/app/staticfiles
+      - media_volume:/usr/src/app/media
+    expose:
+      - 8000
+    env_file:
+      - ./server/.env
+    depends_on:
+      - db
+      - redis
+    networks:
+      - job-search-engine
+  redis:
+    image: redis:7-alpine
+    networks:
+      - job-search-engine
+  celery_worker:
+    build:
+      context: ./server
+    command: celery -A job_search_engine worker --loglevel=INFO --pool=solo
+    volumes:
+      - ./server:/user/src/app
+    env_file:
+      - ./server/.env
+    depends_on:
+      - redis
+      - db
+      - backend
+    networks:
+      - job-search-engine
+  celery_beat:
+    build:
+      context: ./server
+    command: celery -A job_search_engine  beat -l INFO    
+    volumes:
+      - ./server:/user/src/app
+    env_file:
+      - ./server/.env
+    depends_on:
+      - redis
+      - db
+      - backend
+    networks:
+      - job-search-engine
+  flower:
+    build:
+      context: ./server
+    command: celery -A job_search_engine flower --port=5566
+    volumes:
+      - ./server:/user/src/app
+    env_file:
+      - ./server/.env
+    ports:
+      - 5557:5566
+    depends_on:
+      - redis
+      - db
+      - backend
+    networks:
+      - job-search-engine
+  db:
+    image: postgres:15.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12344321
+      - POSTGRES_DB=job_search_engine
+    networks:
+      - job-search-engine
+  frontend:
+    build:
+      context: ./client
+    volumes:
+      - react_build:/usr/src/client/dist/
+    networks:
+      - job-search-engine
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+    volumes:
+      - static_volume:/usr/src/app/staticfiles
+      - media_volume:/usr/src/app/media
+      - react_build:/usr/src/client/dist/
+    networks:
+      - job-search-engine
+networks:
+    job-search-engine:
+        driver: bridge
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+  react_build:

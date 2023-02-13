@@ -51,10 +51,15 @@ type JWTDecode = {
 
 export const AuthenticationProvider = ({ children }: { children: React.ReactNode }) => {
   const [userId, setUserId] = useState("")
-  const [tokens, setTokens] = useState({
-    access: "",
-    refresh: ""
-  })
+  const [tokens, setTokens] = useState(
+    () =>
+      localStorage.getItem("tokens")
+        ? JSON.parse(String(localStorage.getItem("tokens")))
+        : {
+          access: "",
+          refresh: ""
+        }
+  )
   const [user, setUser] = useState<User>({
     "id": "",
     "email": "",
@@ -87,7 +92,6 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
       return logout(tokens.refresh)
     },
     onSuccess: (data) => {
-      console.log(data)
       clearInfo()
     },
     onError: () => {
@@ -124,22 +128,10 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
   })
 
   useEffect(() => {
-    const savedTokens = localStorage.getItem("tokens")
-    let savedTokensJson;
-    if (savedTokens) {
-      savedTokensJson = JSON.parse(savedTokens?.toString())
-      setTokens(savedTokensJson)
-    }
     if (loading) {
-      if (savedTokensJson) {
-        refreshTokenMutation.mutate(savedTokensJson.refresh)
-      } else {
-        setLoading(false)
-      }
+      refreshTokenMutation.mutate(tokens.refresh)
     }
-    let timer: number;
-
-    timer = setInterval(() => {
+    let timer = setInterval(() => {
       if (tokens.access && tokens.refresh) {
         refreshTokenMutation.mutate(String(tokens.access))
       }

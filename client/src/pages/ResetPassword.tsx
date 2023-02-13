@@ -31,7 +31,7 @@ export default function ResetPasswordForm(): JSX.Element {
       setSuccessMsg("Password reset successfully. Please login your again with your new password.")
       setErrMsg("")
     },
-    onError: (error) => {
+    onError: (error: any) => {
       const firstError = Object.entries(error.response.data)[0]
       const firstErrorMsg = firstError[1]
       // console.log(firstErrorMsg)

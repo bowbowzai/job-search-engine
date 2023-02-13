@@ -190,7 +190,10 @@ const Home = () => {
                   <Text fontWeight="semibold" fontSize="2xl">
                     Recommended Jobs
                   </Text>
-                  {recommendedJobsQuery.isLoading ? (<SimpleGrid mt={5} gap={5}>
+                  {recommendedJobsQuery.isLoading ? (<SimpleGrid columns={{
+                    base: 1,
+                    lg: 3
+                  }} mt={5} gap={5}>
                     <Skeleton w="full" height="380px" />
                     <Skeleton w="full" height="380px" />
                     <Skeleton w="full" height="380px" />
@@ -210,7 +213,10 @@ const Home = () => {
                 <Text mt={5} fontWeight="semibold" fontSize="2xl">
                   All Jobs
                 </Text>
-                {jobsQuery.isLoading ? (<SimpleGrid mt={5} columns={3} gap={5}>
+                {jobsQuery.isLoading ? (<SimpleGrid mt={5} columns={{
+                  base: 1,
+                  lg: 3
+                }} gap={5}>
                   <Skeleton w="full" height="380px" />
                   <Skeleton w="full" height="380px" />
                   <Skeleton w="full" height="380px" />
