@@ -34,7 +34,6 @@ const Search = ({ jobsRefetch }: SearchProp) => {
     queryFn: () => getJobBySearch(searchKeyword),
     onSuccess: (data) => {
       setIsFetch(false)
-      console.log(data);
     },
     enabled: isFetch,
     staleTime: Infinity

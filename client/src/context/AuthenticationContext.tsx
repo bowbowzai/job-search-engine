@@ -114,15 +114,11 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
       return refreshToken(refresh)
     },
     onSuccess: (data) => {
-      console.log("refresh token success")
-      console.log("is loading from success: " + loading);
       setLoading(false)
       setTokens(data)
       localStorage.setItem("tokens", JSON.stringify(data))
     },
     onError(error) {
-      console.log("is loading from failure: " + loading);
-      console.log("refresh token failure")
       setLoading(false)
       logoutMutation.mutate()
     },
@@ -153,7 +149,6 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
       }
     }
     timer = setInterval(() => {
-      console.log("interval invoke")
       if (tokens.access && tokens.refresh) {
         refreshTokenMutation.mutate(String(tokens.access))
       }

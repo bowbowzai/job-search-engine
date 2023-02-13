@@ -30,7 +30,6 @@ export default function VerifyEmailForm(): JSX.Element {
       } else {
         setErrMsg(String(firstErrorMsg).toString())
       }
-      console.log(firstErrorMsg)
     },
   })
   useEffect(() => {

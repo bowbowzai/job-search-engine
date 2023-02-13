@@ -17,7 +17,8 @@ import {
   TagLabel,
   TagCloseButton,
   InputRightElement,
-  InputGroup
+  InputGroup,
+  useToast
 } from '@chakra-ui/react';
 import { AddIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import { AuthenticationContext } from "../context/AuthenticationContext"
@@ -27,9 +28,9 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateProfile } from '../api/profiles';
 
-
 export default function UserProfileEdit(): JSX.Element {
   const navigate = useNavigate()
+  const toast = useToast()
   const { user, tokens, setUser } = useContext(AuthenticationContext)
   const [jobKeyword, setJobKeyword] = useState("")
   const [locationKeyword, setLocationKeyword] = useState("")
@@ -48,7 +49,18 @@ export default function UserProfileEdit(): JSX.Element {
       setUser(data)
       navigate("/")
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      if (error.response.status == 413) {
+        toast({
+          title: 'Image too large.',
+          description: "Please use a smaller image.",
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+          position: "top"
+        })
+
+      }
       console.log(error);
     }
   })
