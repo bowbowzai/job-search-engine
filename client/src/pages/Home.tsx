@@ -32,7 +32,7 @@ import { FaRegSadCry } from "react-icons/fa"
 
 const Home = () => {
   const navigate = useNavigate()
-  const { user, loading, tokens } = useContext(AuthenticationContext)
+  const { user, loading, tokens, isRefreshing } = useContext(AuthenticationContext)
   const observerElem = useRef(null)
 
   const jobsQuery = useInfiniteQuery({
@@ -49,7 +49,7 @@ const Home = () => {
   const recommendedJobsQuery = useQuery({
     queryKey: ["recommendedJobs"],
     queryFn: () => getRecommendedJob(tokens.access),
-    enabled: tokens.access != null && tokens.access != "",
+    enabled: tokens.access != null && tokens.access != "" && !isRefreshing,
   })
 
   const handleObserver = useCallback((entries: any) => {

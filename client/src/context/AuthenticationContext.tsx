@@ -19,6 +19,7 @@ type AuthenticationType = {
   setLoading: react.Dispatch<react.SetStateAction<boolean>>,
   loading: boolean;
   logoutMutate: (variables: void, options?: MutateOptions<any, unknown, void, unknown> | undefined) => void,
+  isRefreshing: boolean;
 }
 
 export const AuthenticationContext = createContext<AuthenticationType>({
@@ -40,6 +41,7 @@ export const AuthenticationContext = createContext<AuthenticationType>({
   setLoading: () => { },
   loading: true,
   logoutMutate: () => { },
+  isRefreshing: true
 })
 
 type JWTDecode = {
@@ -52,14 +54,16 @@ type JWTDecode = {
 export const AuthenticationProvider = ({ children }: { children: React.ReactNode }) => {
   const isUnmountedRef = useRef(false)
   const [userId, setUserId] = useState("")
-  const [tokens, setTokens] = useState(
-    () =>
-      localStorage.getItem("tokens")
-        ? JSON.parse(String(localStorage.getItem("tokens")))
-        : {
-          access: "",
-          refresh: ""
-        }
+  const [tokens, setTokens] = useState<{
+    access: string;
+    refresh: string;
+  }>(
+    localStorage.getItem("tokens")
+      ? JSON.parse(String(localStorage.getItem("tokens")))
+      : {
+        access: "",
+        refresh: ""
+      }
   )
   const [user, setUser] = useState<User>({
     "id": "",
@@ -114,11 +118,14 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
       return refreshToken(refresh)
     },
     onSuccess: (data) => {
+      console.log("refresh success")
       setLoading(false)
       setTokens(data)
+      queryClient.setQueryData(["user"], tokens.access)
       localStorage.setItem("tokens", JSON.stringify(data))
     },
     onError(error) {
+      console.log("refresh error")
       setLoading(false)
       logoutMutation.mutate()
     },
@@ -139,26 +146,27 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
 
   useEffect(() => {
     let timer: number;
-    if (isUnmountedRef.current) return
-    isUnmountedRef.current = true
-    if (loading) {
-      if (tokens.access != null && tokens.access != "") {
-        refreshTokenMutation.mutate(tokens.refresh)
-      } else {
-        setLoading(false)
+    console.log()
+    if (!isUnmountedRef.current) {
+      if (loading) {
+        if (tokens.access != null && tokens.access != "") {
+          refreshTokenMutation.mutate(tokens.refresh)
+        } else {
+          setLoading(false)
+        }
       }
+      isUnmountedRef.current = true
     }
     timer = setInterval(() => {
-      if (tokens.access && tokens.refresh) {
-        refreshTokenMutation.mutate(String(tokens.access))
+      console.log(tokens);
+      if (tokens.access != "" && tokens.refresh != "") {
+        refreshTokenMutation.mutate(String(tokens.refresh))
       }
-    }, 1500000)
-
+    }, 60 * 25 * 1000)
     return () => {
-      isUnmountedRef.current = true
       clearInterval(timer)
     }
-  }, [])
+  }, [tokens])
 
   return (
     <AuthenticationContext.Provider value={{
@@ -169,6 +177,7 @@ export const AuthenticationProvider = ({ children }: { children: React.ReactNode
       setLoading,
       loading,
       logoutMutate: logoutMutation.mutate,
+      isRefreshing: refreshTokenMutation.isLoading
     }}>
       {children}
     </AuthenticationContext.Provider>

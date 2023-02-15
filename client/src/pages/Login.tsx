@@ -19,7 +19,7 @@ import { AuthenticationContext } from '../context/AuthenticationContext';
 
 export default function SplitScreen() {
   const navigate = useNavigate()
-  const { setUser, setTokens, setLoading } = useContext(AuthenticationContext)
+  const { tokens, setTokens, setLoading } = useContext(AuthenticationContext)
 
   const [loginCredentials, setLoginCredentials] = useState({
     email: "",
@@ -29,19 +29,23 @@ export default function SplitScreen() {
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      //setUser(data.user)
       localStorage.setItem("tokens", JSON.stringify(data))
       setTokens(data)
       setLoading(false)
       navigate("/")
     },
-
   })
   function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
     setLoginCredentials(prev => ({
       ...prev,
       [event.target.name]: event.target.value
     }))
+  }
+
+  function handleKeyDownLogin(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key == "Enter") {
+      loginMutation.mutate(loginCredentials)
+    }
   }
 
   return (
@@ -51,11 +55,11 @@ export default function SplitScreen() {
           <Heading fontSize={'2xl'}>Sign in to your account</Heading>
           <FormControl id="email">
             <FormLabel>Email address</FormLabel>
-            <Input type="email" name="email" value={loginCredentials.email} onChange={handleOnChange} />
+            <Input onKeyDown={handleKeyDownLogin} type="email" name="email" value={loginCredentials.email} onChange={handleOnChange} />
           </FormControl>
           <FormControl id="password">
             <FormLabel>Password</FormLabel>
-            <Input type="password" name="password" value={loginCredentials.password} onChange={handleOnChange} />
+            <Input onKeyDown={handleKeyDownLogin} type="password" name="password" value={loginCredentials.password} onChange={handleOnChange} />
           </FormControl>
           <Stack spacing={6}>
             <Stack
