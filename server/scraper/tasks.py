@@ -1,9 +1,12 @@
-from celery import shared_task
-from threading import Thread
-from .utils import *
-from jobs.models import Job
-from django.db import IntegrityError
 import datetime
+from threading import Thread
+
+from celery import shared_task
+from django.db import IntegrityError
+
+from jobs.models import Job
+
+from .utils import *
 
 
 @shared_task(bind=True)

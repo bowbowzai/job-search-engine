@@ -1,4 +1,5 @@
 from __future__ import absolute_import, unicode_literals
+
 import os
 
 from celery import Celery
@@ -18,7 +19,7 @@ app.conf.beat_schedule = {
     # Executes every Monday morning at 7:30 a.m.
     "update-jobs-every-5-hours": {
         "task": "scraper.tasks.scraped_jobs",
-        "schedule": crontab(hour="*/3", minute=0),
+        "schedule": crontab(hour="*/1", minute=0),
         # "schedule": 60,
     },
 }

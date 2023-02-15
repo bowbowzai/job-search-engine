@@ -1,9 +1,11 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+
+from users.models import MyUser
+
 from .models import Profile
 from .serializers import ProfileSerializer, ProfileUpdateSerializer
-from users.models import MyUser
 
 
 # Create your views here.

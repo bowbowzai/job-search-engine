@@ -1,7 +1,8 @@
-import requests
 import re
-from bs4 import BeautifulSoup
 from collections import defaultdict
+
+import requests
+from bs4 import BeautifulSoup
 
 # https://dashboard.scraperapi.com/billing
 

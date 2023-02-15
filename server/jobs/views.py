@@ -1,11 +1,13 @@
-from django.shortcuts import render
 from django.db.models import Q
-from rest_framework import status, generics, permissions
+from django.shortcuts import render
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+
 from profiles.models import Profile
+
 from .models import Job
-from .serializers import JobSerializer
 from .pagination import JobsPagination
+from .serializers import JobSerializer
 
 
 # Create your views here.

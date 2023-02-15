@@ -1,15 +1,16 @@
 import json
+
+from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
-from rest_framework import status, permissions
+from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
-from django.contrib.auth import authenticate
-from users.models import MyUser
-from profiles.serializers import ProfileSerializer
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
+from profiles.serializers import ProfileSerializer
+from users.models import MyUser
 
 # # Create your views here.
 # @api_view(["POST"])
