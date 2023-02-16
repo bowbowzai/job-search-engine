@@ -74,6 +74,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=12344321
       - POSTGRES_DB=job_search_engine
+    # env_file:
+    #   - ./server/.env.prod.db
     networks:
       - job-search-engine
   frontend:

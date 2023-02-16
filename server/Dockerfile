@@ -18,4 +18,7 @@ RUN chmod +x /usr/src/app/entrypoint.sh
 
 COPY . .
 
+RUN adduser -D myuser
+USER myuser
+
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
