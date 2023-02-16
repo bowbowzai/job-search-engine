@@ -2,6 +2,8 @@
 > The job postings displayed in the web application are scraped from various third-party websites. This application is intended for personal project, education purposes and not commercial intended. I do not guarantee the accuracy or completeness of the job postings and recommend that users verify the information directly with the respective website.
 # Job Search Engine
 Full stack web application based on Django and React, scrapes job postings from various websites and stores them in a unified format in our database with periodic updates. The app also recommends job postings based on user's desired job and location, providing a convenient way for job seekers to browse multiple websites in a single platform. Our system aims to make the job search process more efficient and effective by providing a centralized platform for job postings and personalized recommendations.
+![image](https://user-images.githubusercontent.com/74807962/219387582-614bbcbc-db4d-45c4-aa62-184d74d2bc18.png)
+
 
 ## Usage
 
@@ -32,6 +34,30 @@ docker-compose up -d --build
 ```
 > **Note**
 > The job posts will only be scraped after 1 hour since the celery-beat periodic task had been set to periodically execute the scrape task every 1 hour.
+
+
+## Features
+- Register
+- Login
+- Reset password
+- Email verification
+- Search
+- Edit profile(update desired location, desired job etc.)
+- Periodic update job posts
+- Infinite scroll
+- Responsiveness
+
+## Technology Stack
+This project was built using django/drf and react
+- react
+- tanstack-query
+- chakra ui
+- django
+- postgreSQL
+- celery
+- redis
+- nginx
+- docker
 
 ## Contributing
 
